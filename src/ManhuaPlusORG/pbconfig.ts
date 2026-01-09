@@ -1,12 +1,10 @@
-/* SPDX-License-Identifier: GPL-3.0-or-later */
-/* Copyright © 2025 Inkdex */
-
 import { ContentRating, SourceIntents, type ExtensionInfo } from "@paperback/types";
+import { getVersion } from "../generic/version";
 
 export default {
   name: "ManhuaPlusORG",
   description: "Extension for manhuaplus.org",
-  version: "2.0.0",
+  version: getVersion(),
   icon: "icon.png",
   language: "🇬🇧",
   contentRating: ContentRating.EVERYONE,
