@@ -2,7 +2,7 @@ import { ContentRating, SourceIntents, type ExtensionInfo } from "@paperback/typ
 import { getVersion } from "../generic/version";
 
 export default {
-  name: "ManhuaPlusORG",
+  name: "ManhuaPlusOrg",
   description: "Extension for manhuaplus.org",
   version: getVersion(),
   icon: "icon.png",
