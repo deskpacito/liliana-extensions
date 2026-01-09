@@ -35,7 +35,11 @@ export class LilianaParser {
 
     const genres: Tag[] = [];
     $(".a2 div > a[rel='tag'].label").each((_: any, el: any) => {
-      genres.push({ id: $(el).text().trim(), title: $(el).text().trim() });
+      const id = $(el).attr("href")?.split("/").pop() ?? "";
+      const label = $(el).text().trim();
+      if (id && label) {
+        genres.push({ id: id, title: label });
+      }
     });
 
     return {
