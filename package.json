@@ -1,8 +1,7 @@
 {
   "name": "liliana-extensions",
-  "repositoryName": "Liliana Extensions (0.9)",
-  "description": "Generic extension used for any sources that are consuming Liliana.",
   "private": true,
+  "description": "Generic extension used for any sources that are consuming Liliana.",
   "type": "module",
   "scripts": {
     "lint": "oxlint --type-aware --fix",
@@ -17,6 +16,9 @@
     "test": "npm run tsc && npm run lint:check && npm run format:check && npm run bundle",
     "prepare": "husky"
   },
+  "dependencies": {
+    "cheerio": "^1.1.2"
+  },
   "devDependencies": {
     "@paperback/toolchain": "^1.0.0-alpha.57",
     "@paperback/types": "^1.0.0-alpha.57",
@@ -26,7 +28,5 @@
     "oxlint-tsgolint": "^0.11.0",
     "typescript": "^5.9.3"
   },
-  "dependencies": {
-    "cheerio": "^1.1.2"
-  }
+  "repositoryName": "Liliana Extensions (0.9)"
 }
