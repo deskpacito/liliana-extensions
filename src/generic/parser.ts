@@ -7,11 +7,12 @@ import {
   type SourceManga,
   type Tag,
 } from "@paperback/types";
-import type { CheerioAPI } from "cheerio";
+import * as cheerio from "cheerio";
 import { Liliana } from "./main";
 
 export class LilianaParser {
-  async parseMangaDetails($: CheerioAPI, mangaId: string, source: Liliana): Promise<SourceManga> {
+  async parseMangaDetails(html: string, mangaId: string, source: Liliana): Promise<SourceManga> {
+    const $ = cheerio.load(html);
     const title = $(".a2 header h1").text().trim();
     const thumbnail = this.getImgAttr($(".a1 > figure img"), source.domain);
     const description = $("div#syn-target").text().trim();
@@ -63,7 +64,8 @@ export class LilianaParser {
     };
   }
 
-  parseChapterList($: CheerioAPI, sourceManga: SourceManga, source: Liliana): Chapter[] {
+  parseChapterList(html: string, sourceManga: SourceManga, source: Liliana): Chapter[] {
+    const $ = cheerio.load(html);
     const chapters: Chapter[] = [];
 
     $("ul > li.chapter").each((_: any, element: any) => {
@@ -98,9 +100,8 @@ export class LilianaParser {
   }
 
   async parseChapterDetails(
-    $: CheerioAPI,
-    chapter: Chapter,
     _html: string,
+    chapter: Chapter,
     _source: Liliana,
   ): Promise<ChapterDetails> {
     return {
@@ -111,7 +112,8 @@ export class LilianaParser {
   }
 
   // Helper for step 1 of chapter details
-  getNumericChapterId($: CheerioAPI): string | null {
+  getNumericChapterId(html: string): string | null {
+    const $ = cheerio.load(html);
     let numericChapterId = null;
     $("script").each((_: any, el: any) => {
       const content = $(el).html();
@@ -126,7 +128,8 @@ export class LilianaParser {
   }
 
   // Helper for step 2 of chapter details
-  parseAjaxImageList($images: CheerioAPI): string[] {
+  parseAjaxImageList(html: string): string[] {
+    const $images = cheerio.load(html);
     const pages: string[] = [];
     $images("div.separator").each((_: any, el: any) => {
       const a = $images(el).find("a");
@@ -149,10 +152,11 @@ export class LilianaParser {
   }
 
   async parseDiscoverSectionItems(
-    $: CheerioAPI,
+    html: string,
     section: DiscoverSection,
     source: Liliana,
   ): Promise<DiscoverSectionItem[]> {
+    const $ = cheerio.load(html);
     const items: DiscoverSectionItem[] = [];
     const selector = source.searchMangaSelector || "div#main div.grid > div";
 
@@ -180,7 +184,8 @@ export class LilianaParser {
     return items;
   }
 
-  async parseSearchResults($: CheerioAPI, source: Liliana): Promise<SearchResultItem[]> {
+  async parseSearchResults(html: string, source: Liliana): Promise<SearchResultItem[]> {
+    const $ = cheerio.load(html);
     const items: SearchResultItem[] = [];
     const selector = source.searchMangaSelector || "div#main div.grid > div";
 

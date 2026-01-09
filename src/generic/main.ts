@@ -23,13 +23,12 @@ import {
   type SettingsFormProviding,
   type SourceManga,
   type Request,
-  type Response,
 } from "@paperback/types";
-import * as cheerio from "cheerio";
+
 // Extension forms file
 import { SettingsForm } from "./forms";
 // Extension network file
-import { MainInterceptor } from "./network";
+import { MainInterceptor, fetchRequest } from "./network";
 import { LilianaParser } from "./parser";
 
 export interface GenericParams {
@@ -117,12 +116,6 @@ export abstract class Liliana implements LilianaImplementation {
     return new SettingsForm();
   }
 
-  checkResponseError(response: Response): void {
-    if (response.status !== 200) {
-      throw new Error(`Failed to fetch data. Status: ${response.status}`);
-    }
-  }
-
   async getDiscoverSections(): Promise<DiscoverSection[]> {
     const popularSection: DiscoverSection = {
       id: "popular",
@@ -165,13 +158,9 @@ export abstract class Liliana implements LilianaImplementation {
       method: "GET",
     };
 
-    const [response, data] = await Application.scheduleRequest(request);
-    this.checkResponseError(response);
+    const html = await fetchRequest(request);
 
-    const html = Application.arrayBufferToUTF8String(data);
-    const $ = cheerio.load(html);
-
-    const items = await this.parser.parseDiscoverSectionItems($, section, this);
+    const items = await this.parser.parseDiscoverSectionItems(html, section, this);
 
     return {
       items: items,
@@ -198,13 +187,9 @@ export abstract class Liliana implements LilianaImplementation {
       method: "GET",
     };
 
-    const [response, data] = await Application.scheduleRequest(request);
-    this.checkResponseError(response);
+    const html = await fetchRequest(request);
 
-    const html = Application.arrayBufferToUTF8String(data);
-    const $ = cheerio.load(html);
-
-    const items = await this.parser.parseSearchResults($, this);
+    const items = await this.parser.parseSearchResults(html, this);
 
     return {
       items: items,
@@ -219,13 +204,9 @@ export abstract class Liliana implements LilianaImplementation {
       method: "GET",
     };
 
-    const [response, data] = await Application.scheduleRequest(request);
-    this.checkResponseError(response);
+    const html = await fetchRequest(request);
 
-    const html = Application.arrayBufferToUTF8String(data);
-    const $ = cheerio.load(html);
-
-    return this.parser.parseMangaDetails($, mangaId, this);
+    return this.parser.parseMangaDetails(html, mangaId, this);
   }
 
   // Populates the chapter list
@@ -235,13 +216,9 @@ export abstract class Liliana implements LilianaImplementation {
       method: "GET",
     };
 
-    const [response, data] = await Application.scheduleRequest(request);
-    this.checkResponseError(response);
+    const html = await fetchRequest(request);
 
-    const html = Application.arrayBufferToUTF8String(data);
-    const $ = cheerio.load(html);
-
-    return this.parser.parseChapterList($, sourceManga, this);
+    return this.parser.parseChapterList(html, sourceManga, this);
   }
 
   // Populates a chapter with images
@@ -251,13 +228,9 @@ export abstract class Liliana implements LilianaImplementation {
       method: "GET",
     };
 
-    const [response, data] = await Application.scheduleRequest(request);
-    this.checkResponseError(response);
+    const html = await fetchRequest(request);
 
-    const html = Application.arrayBufferToUTF8String(data);
-    const $ = cheerio.load(html);
-
-    const numericChapterId = this.parser.getNumericChapterId($);
+    const numericChapterId = this.parser.getNumericChapterId(html);
 
     if (!numericChapterId) {
       throw new Error("Failed to find CHAPTER_ID");
@@ -273,18 +246,14 @@ export abstract class Liliana implements LilianaImplementation {
       },
     };
 
-    const [ajaxResponse, ajaxData] = await Application.scheduleRequest(ajaxRequest);
-    this.checkResponseError(ajaxResponse);
-
-    const ajaxString = Application.arrayBufferToUTF8String(ajaxData);
+    const ajaxString = await fetchRequest(ajaxRequest);
     const ajaxJson = JSON.parse(ajaxString);
 
     if (!ajaxJson.html) {
       throw new Error("Failed to get image list HTML");
     }
 
-    const $images = cheerio.load(ajaxJson.html);
-    const pages = this.parser.parseAjaxImageList($images);
+    const pages = this.parser.parseAjaxImageList(ajaxJson.html);
 
     return {
       id: chapter.chapterId,
