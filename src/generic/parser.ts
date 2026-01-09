@@ -8,7 +8,7 @@ import {
   type Tag,
 } from "@paperback/types";
 import type { CheerioAPI } from "cheerio";
-import { Liliana } from "./Liliana";
+import { Liliana } from "./main";
 
 export class LilianaParser {
   async parseMangaDetails($: CheerioAPI, mangaId: string, source: Liliana): Promise<SourceManga> {

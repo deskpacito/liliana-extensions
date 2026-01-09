@@ -30,14 +30,19 @@ import * as cheerio from "cheerio";
 import { SettingsForm } from "./forms";
 // Extension network file
 import { MainInterceptor } from "./network";
-import { LilianaParser } from "./LilianaParser";
+import { LilianaParser } from "./parser";
 
 export interface GenericParams {
   name: string;
   domain: string;
   contentRating: ContentRating;
   language: string;
-  usePostIds: boolean;
+  excludeImagePatterns?: string[];
+  basicRateLimiter?: {
+    numberOfRequests: number;
+    bufferInterval: number;
+    ignoreImages?: boolean;
+  };
   searchPagePathName?: string;
   searchMangaSelector?: string;
   searchRatingSelector?: string;
@@ -46,14 +51,13 @@ export interface GenericParams {
   chapterEndpoint?: number;
   chapterDetailsSelector?: string;
   bypassPage?: string;
-  useListParameter?: boolean;
   directoryPath?: string;
   parser?: LilianaParser;
   requestManager?: PaperbackInterceptor;
 }
 
 // Should match the capabilities which you defined in pbconfig.ts
-type ContentTemplateImplementation = SettingsFormProviding &
+type LilianaImplementation = SettingsFormProviding &
   Extension &
   DiscoverSectionProviding &
   SearchResultsProviding &
@@ -61,23 +65,18 @@ type ContentTemplateImplementation = SettingsFormProviding &
   ChapterProviding;
 
 // Main extension class
-export abstract class Liliana implements ContentTemplateImplementation {
+export abstract class Liliana implements LilianaImplementation {
   // Common properties
   readonly name: string;
   readonly domain: string;
   readonly defaultContentRating: ContentRating;
   readonly language: string;
-  readonly usePostIds: boolean;
   readonly searchPagePathName: string;
   readonly searchMangaSelector: string;
   parser: LilianaParser;
 
   // Implementation of the main rate limiter
-  mainRateLimiter = new BasicRateLimiter("main", {
-    numberOfRequests: 15,
-    bufferInterval: 10,
-    ignoreImages: true,
-  });
+  mainRateLimiter: BasicRateLimiter;
 
   // Implementation of the main interceptor
   mainInterceptor: PaperbackInterceptor;
@@ -87,11 +86,24 @@ export abstract class Liliana implements ContentTemplateImplementation {
     this.domain = params.domain;
     this.defaultContentRating = params.contentRating;
     this.language = params.language;
-    this.usePostIds = params.usePostIds;
     this.searchPagePathName = params.searchPagePathName ?? "page";
     this.searchMangaSelector = params.searchMangaSelector ?? "div#main div.grid > div";
     this.parser = params.parser ?? new LilianaParser();
     this.mainInterceptor = params.requestManager ?? new MainInterceptor("main");
+
+    if (params.basicRateLimiter) {
+      this.mainRateLimiter = new BasicRateLimiter("main", {
+        numberOfRequests: params.basicRateLimiter.numberOfRequests,
+        bufferInterval: params.basicRateLimiter.bufferInterval,
+        ignoreImages: params.basicRateLimiter.ignoreImages ?? false,
+      });
+    } else {
+      this.mainRateLimiter = new BasicRateLimiter("main", {
+        numberOfRequests: 15,
+        bufferInterval: 10,
+        ignoreImages: true,
+      });
+    }
   }
 
   // Method from the Extension interface which we implement, initializes the rate limiter, interceptor, discover sections and search filters

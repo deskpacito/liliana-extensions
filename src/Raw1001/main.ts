@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /* Copyright © 2025 Inkdex */
 
-import { Liliana } from "../generic/Liliana";
+import { Liliana } from "../generic/main";
 import pbconfig from "./pbconfig";
 
 const RAW1001_DOMAIN = "https://raw1001.net";
@@ -13,8 +13,6 @@ export class Raw1001Extension extends Liliana {
       domain: RAW1001_DOMAIN,
       contentRating: pbconfig.contentRating,
       language: pbconfig.language,
-      usePostIds: true, // Defaulting to true as not specified in previous hardcoded version but good practice
-      useListParameter: false,
     });
   }
 }
