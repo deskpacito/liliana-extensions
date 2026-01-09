@@ -1,7 +1,7 @@
 {
   "name": "liliana-extensions",
   "private": true,
-  "description": "Generic extension used for any sources that are consuming Liliana.",
+  "description": "Paperback extensions for websites which use the generic Liliana theme. Maintained by Inkdex.",
   "type": "module",
   "scripts": {
     "lint": "oxlint --type-aware --fix",
