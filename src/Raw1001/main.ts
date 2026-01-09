@@ -1,0 +1,20 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright © 2025 Inkdex */
+
+import { Liliana } from "../generic/main";
+import pbconfig from "./pbconfig";
+
+const RAW1001_DOMAIN = "https://raw1001.net";
+
+export class Raw1001Extension extends Liliana {
+  constructor() {
+    super({
+      name: pbconfig.name,
+      domain: RAW1001_DOMAIN,
+      contentRating: pbconfig.contentRating,
+      language: pbconfig.language,
+    });
+  }
+}
+
+export const Raw1001 = new Raw1001Extension();

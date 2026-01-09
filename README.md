@@ -1,10 +1,46 @@
 # Liliana Extensions
 
+<<<<<<< HEAD
 Paperback extensions for websites which use the generic Liliana theme.
 
 ## Available Extensions
 
 None yet.
+=======
+Paperback extensions designed for Liliana.
+
+> [!IMPORTANT]
+> `content.json` is a sample output and not representative.
+
+This includes the following:
+
+- Package config
+- TypeScript config
+- oxlint config
+- oxfmt config
+- Dependabot config
+- Development setup
+- Husky pre-push hook
+- GitHub CI/CD Actions
+- VSCode config files (settings + extensions)
+- A basic example content extension
+- A basic example tracker extension
+
+All extension repositories in the Inkdex GitHub Organization use this one as their base template.
+
+## Available Extensions
+
+### Content Template
+
+Template that shows the functionality of content providing extensions.
+
+### Tracker Template
+
+Template that shows the functionality of tracking and collection management providing extensions.
+
+> [!NOTE]
+> This template still has to be made.
+>>>>>>> liliana-init
 
 ## Installation
 
@@ -19,7 +55,11 @@ Need help? Check out our [Support Guidelines][support-guidelines] in the [regist
 Want to contribute? Read the [Contributing Guidelines][contributing-guidelines] in the [registry repository][registry-repository] to get started.
 
 [registry-installation-page]: https://inkdex.github.io/installation
+<<<<<<< HEAD
 [repository-installation-page]: https://inkdex.github.io/liliana-extensions/0.9/stable
+=======
+[repository-installation-page]: https://inkdex.github.io/template-extensions/0.9/stable
+>>>>>>> liliana-init
 [support-guidelines]: https://github.com/inkdex/extensions/blob/master/.github/SUPPORT.md
 [registry-repository]: https://github.com/inkdex/extensions
 [contributing-guidelines]: https://github.com/inkdex/extensions/blob/master/.github/CONTRIBUTING.md

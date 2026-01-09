@@ -7,6 +7,7 @@ updates:
     schedule:
       interval: weekly
       day: monday
+<<<<<<< HEAD
     groups:
       security:
         applies-to: security-updates
@@ -22,3 +23,5 @@ updates:
       pre_release:
         patterns:
           - "*"
+=======
+>>>>>>> liliana-init
