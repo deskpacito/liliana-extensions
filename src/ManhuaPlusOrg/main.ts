@@ -6,7 +6,7 @@ import pbconfig from "./pbconfig";
 
 const MANHUAPLUS_DOMAIN = "https://manhuaplus.org";
 
-export class ManhuaPlusORGExtension extends Liliana {
+export class ManhuaPlusOrgExtension extends Liliana {
   constructor() {
     super({
       name: pbconfig.name,
@@ -17,4 +17,4 @@ export class ManhuaPlusORGExtension extends Liliana {
   }
 }
 
-export const ManhuaPlusORG = new ManhuaPlusORGExtension();
+export const ManhuaPlusOrg = new ManhuaPlusOrgExtension();
