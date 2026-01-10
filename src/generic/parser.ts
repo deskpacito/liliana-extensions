@@ -1,6 +1,5 @@
 import {
   type Chapter,
-  type ChapterDetails,
   type DiscoverSection,
   type DiscoverSectionItem,
   type SearchResultItem,
@@ -99,18 +98,6 @@ export class LilianaParser {
     return chapters;
   }
 
-  async parseChapterDetails(
-    _html: string,
-    chapter: Chapter,
-    _source: Liliana,
-  ): Promise<ChapterDetails> {
-    return {
-      id: chapter.chapterId,
-      mangaId: chapter.sourceManga.mangaId,
-      pages: [],
-    };
-  }
-
   // Helper for step 1 of chapter details
   getNumericChapterId(html: string): string | null {
     const $ = cheerio.load(html);
@@ -130,24 +117,46 @@ export class LilianaParser {
   // Helper for step 2 of chapter details
   parseAjaxImageList(html: string): string[] {
     const $images = cheerio.load(html);
+
+    // Check if any separator has data-index
+    const hasDataIndex = $images("div.separator[data-index]").length > 0;
+
+    if (hasDataIndex) {
+      const pages: { index: number; url: string }[] = [];
+      $images("div.separator[data-index]").each((_: any, el: any) => {
+        const element = $images(el);
+        const indexStr = element.attr("data-index");
+        const index = indexStr ? parseInt(indexStr) : -1;
+
+        let url = element.find("a").attr("href");
+        if (!url) url = element.find("img").attr("src");
+
+        if (url && index !== -1) {
+          pages.push({ index, url });
+        }
+      });
+
+      return pages.sort((a, b) => a.index - b.index).map((p) => p.url);
+    }
+
+    // Fallback if no data-index
     const pages: string[] = [];
     $images("div.separator").each((_: any, el: any) => {
-      const a = $images(el).find("a");
-      const img = $images(el).find("img");
-      let url = a.attr("href");
-      if (!url) url = img.attr("src");
+      const element = $images(el);
+      let url = element.find("a").attr("href");
+      if (!url) url = element.find("img").attr("src");
 
-      if (url) {
-        pages.push(url);
-      }
+      if (url) pages.push(url);
     });
 
+    // If still no pages, strictly try img tags as a last resort (legacy fallback)
     if (pages.length === 0) {
       $images("img").each((_: any, el: any) => {
         const src = $images(el).attr("src");
         if (src) pages.push(src);
       });
     }
+
     return pages;
   }
 
