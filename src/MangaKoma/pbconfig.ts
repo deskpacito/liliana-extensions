@@ -3,9 +3,10 @@ import { getVersion } from "../generic/version";
 
 export default {
   name: "MangaKoma",
-  description: "Extension for mangakoma.net",
+  description:
+    "Extension for mangakoma.net, which is a clone of raw1001.net. Use as a mirror/backup in case one of them gets taken down.",
   version: getVersion(),
-  icon: "static/icon.png",
+  icon: "icon.png",
   language: "🇯🇵",
   contentRating: ContentRating.MATURE,
   capabilities:
