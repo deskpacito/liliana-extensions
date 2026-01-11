@@ -1,0 +1,67 @@
+{
+  "buildTime": "2026-01-11T18:34:22.592Z",
+  "builtWith": {
+    "toolchain": "1.0.0-alpha.57",
+    "types": "1.0.0-alpha.57"
+  },
+  "repository": {
+    "name": "Liliana Extensions (0.9)",
+    "description": "Paperback extensions for websites which use the generic Liliana theme. Maintained by Inkdex."
+  },
+  "sources": [
+    {
+      "name": "MangaKoma",
+      "description": "Extension for mangakoma.net, which is a clone of raw1001.net. Use as a mirror/backup in case one of them gets taken down.",
+      "version": "1.0.0-alpha.2",
+      "icon": "icon.png",
+      "language": "🇯🇵",
+      "contentRating": "MATURE",
+      "capabilities": 101,
+      "badges": [],
+      "developers": [
+        {
+          "name": "deskpacito",
+          "website": "https://github.com/deskpacito",
+          "github": "https://github.com/deskpacito"
+        }
+      ],
+      "id": "MangaKoma"
+    },
+    {
+      "name": "ManhuaPlusOrg",
+      "description": "Extension for manhuaplus.org",
+      "version": "1.0.0-alpha.2",
+      "icon": "icon.png",
+      "language": "🇬🇧",
+      "contentRating": "SAFE",
+      "capabilities": 101,
+      "badges": [],
+      "developers": [
+        {
+          "name": "deskpacito",
+          "website": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          "github": "https://github.com/deskpacito"
+        }
+      ],
+      "id": "ManhuaPlusOrg"
+    },
+    {
+      "name": "Raw1001",
+      "description": "Extension for raw1001.net",
+      "version": "1.0.0-alpha.2",
+      "icon": "icon.png",
+      "language": "🇯🇵",
+      "contentRating": "SAFE",
+      "capabilities": 101,
+      "badges": [],
+      "developers": [
+        {
+          "name": "deskpacito",
+          "website": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          "github": "https://github.com/deskpacito"
+        }
+      ],
+      "id": "Raw1001"
+    }
+  ]
+}
