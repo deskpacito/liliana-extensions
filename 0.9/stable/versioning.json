@@ -1,5 +1,5 @@
 {
-  "buildTime": "2026-01-14T06:03:38.074Z",
+  "buildTime": "2026-01-14T06:10:09.018Z",
   "builtWith": {
     "toolchain": "1.0.0-alpha.57",
     "types": "1.0.0-alpha.57"
@@ -16,7 +16,7 @@
       "icon": "icon.png",
       "language": "ja",
       "contentRating": "MATURE",
-      "capabilities": 101,
+      "capabilities": 69,
       "badges": [],
       "developers": [
         {
@@ -33,7 +33,7 @@
       "icon": "icon.png",
       "language": "en",
       "contentRating": "MATURE",
-      "capabilities": 101,
+      "capabilities": 69,
       "badges": [],
       "developers": [
         {
@@ -50,7 +50,7 @@
       "icon": "icon.png",
       "language": "ja",
       "contentRating": "MATURE",
-      "capabilities": 101,
+      "capabilities": 69,
       "badges": [],
       "developers": [
         {
