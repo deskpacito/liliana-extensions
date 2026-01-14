@@ -9,7 +9,6 @@ const RAW1001_DOMAIN = "https://raw1001.net";
 export class Raw1001Extension extends Liliana {
   constructor() {
     super({
-      name: pbconfig.name,
       domain: RAW1001_DOMAIN,
       contentRating: pbconfig.contentRating,
       language: pbconfig.language,

@@ -1,13 +1,16 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright © 2025 Inkdex */
+
 import { ContentRating, SourceIntents, type ExtensionInfo } from "@paperback/types";
-import { getVersion } from "../generic/version";
+import { getVersion } from "../generic/utils";
 
 export default {
-  name: "ManhuaPlusOrg",
-  description: "Extension for manhuaplus.org",
+  name: "ManhuaPlus",
+  description: "Extension that pulls content from manhuaplus.org.",
   version: getVersion(),
   icon: "icon.png",
-  language: "🇬🇧",
-  contentRating: ContentRating.EVERYONE,
+  language: "en",
+  contentRating: ContentRating.MATURE,
   capabilities:
     SourceIntents.SETTINGS_FORM_PROVIDING |
     SourceIntents.DISCOVER_SECIONS_PROVIDING |
@@ -17,7 +20,6 @@ export default {
   developers: [
     {
       name: "deskpacito",
-      website: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       github: "https://github.com/deskpacito",
     },
   ],

@@ -9,7 +9,6 @@ const MANGAKOMA_DOMAIN = "https://mangakoma.net";
 export class MangaKomaExtension extends Liliana {
   constructor() {
     super({
-      name: pbconfig.name,
       domain: MANGAKOMA_DOMAIN,
       contentRating: pbconfig.contentRating,
       language: pbconfig.language,

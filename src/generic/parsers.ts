@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright © 2025 Inkdex */
+
 import {
   type Chapter,
   type DiscoverSection,
@@ -7,13 +10,18 @@ import {
   type Tag,
 } from "@paperback/types";
 import * as cheerio from "cheerio";
-import { Liliana } from "./main";
+import { ContentRating } from "@paperback/types";
 
 export class LilianaParser {
-  async parseMangaDetails(html: string, mangaId: string, source: Liliana): Promise<SourceManga> {
+  parseMangaDetails(
+    html: string,
+    mangaId: string,
+    domain: string,
+    defaultContentRating: ContentRating,
+  ): SourceManga {
     const $ = cheerio.load(html);
     const title = $(".a2 header h1").text().trim();
-    const thumbnail = this.getImgAttr($(".a1 > figure img"), source.domain);
+    const thumbnail = this.getImgAttr($(".a1 > figure img"), domain);
     const description = $("div#syn-target").text().trim();
 
     const secondaryTitles: string[] = [];
@@ -51,7 +59,7 @@ export class LilianaParser {
         synopsis: description,
         author: author,
         status: status,
-        contentRating: source.defaultContentRating,
+        contentRating: defaultContentRating,
         tagGroups: [
           {
             id: "genres",
@@ -63,7 +71,12 @@ export class LilianaParser {
     };
   }
 
-  parseChapterList(html: string, sourceManga: SourceManga, source: Liliana): Chapter[] {
+  parseChapterList(
+    html: string,
+    sourceManga: SourceManga,
+    domain: string,
+    language: string,
+  ): Chapter[] {
     const $ = cheerio.load(html);
     const chapters: Chapter[] = [];
 
@@ -77,7 +90,7 @@ export class LilianaParser {
       const dateString = timeElement.attr("datetime");
 
       if (href) {
-        const chapterId = href.replace(source.domain, "").replace(/^\//, "");
+        const chapterId = href.replace(domain, "").replace(/^\//, "");
         const chapNumMatch = title.match(/(\d+(\.\d+)?)/);
         const chapNum = chapNumMatch && chapNumMatch[0] ? parseFloat(chapNumMatch[0]) : 0;
 
@@ -86,7 +99,7 @@ export class LilianaParser {
         chapters.push({
           chapterId: chapterId,
           sourceManga: sourceManga,
-          langCode: source.language,
+          langCode: language,
           chapNum: chapNum,
           title: title,
           publishDate: dateValue ? new Date(dateValue * 1000) : new Date(),
@@ -160,14 +173,15 @@ export class LilianaParser {
     return pages;
   }
 
-  async parseDiscoverSectionItems(
+  parseDiscoverSectionItems(
     html: string,
     section: DiscoverSection,
-    source: Liliana,
-  ): Promise<DiscoverSectionItem[]> {
+    domain: string,
+    searchMangaSelector: string,
+  ): DiscoverSectionItem[] {
     const $ = cheerio.load(html);
     const items: DiscoverSectionItem[] = [];
-    const selector = source.searchMangaSelector || "div#main div.grid > div";
+    const selector = searchMangaSelector || "div#main div.grid > div";
 
     $(selector).each((_: any, element: any) => {
       const el = $(element);
@@ -176,10 +190,10 @@ export class LilianaParser {
 
       const title = titleElement.text().trim();
       const href = titleElement.attr("href");
-      const imageUrl = this.getImgAttr(imgElement, source.domain);
+      const imageUrl = this.getImgAttr(imgElement, domain);
 
       if (title && href) {
-        const id = href.replace(source.domain, "").replace(/^\//, "");
+        const id = href.replace(domain, "").replace(/^\//, "");
 
         items.push({
           type: section.id === "popular" ? "prominentCarouselItem" : "simpleCarouselItem",
@@ -193,10 +207,14 @@ export class LilianaParser {
     return items;
   }
 
-  async parseSearchResults(html: string, source: Liliana): Promise<SearchResultItem[]> {
+  parseSearchResults(
+    html: string,
+    domain: string,
+    searchMangaSelector: string,
+  ): SearchResultItem[] {
     const $ = cheerio.load(html);
     const items: SearchResultItem[] = [];
-    const selector = source.searchMangaSelector || "div#main div.grid > div";
+    const selector = searchMangaSelector || "div#main div.grid > div";
 
     $(selector).each((_: any, element: any) => {
       const el = $(element);
@@ -205,10 +223,10 @@ export class LilianaParser {
 
       const title = titleElement.text().trim();
       const href = titleElement.attr("href");
-      const imageUrl = this.getImgAttr(imgElement, source.domain);
+      const imageUrl = this.getImgAttr(imgElement, domain);
 
       if (title && href) {
-        const id = href.replace(source.domain, "").replace(/^\//, "");
+        const id = href.replace(domain, "").replace(/^\//, "");
         items.push({
           mangaId: id,
           title: title,

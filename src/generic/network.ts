@@ -8,7 +8,6 @@ import {
   type Response,
 } from "@paperback/types";
 
-// Intercepts all the requests and responses and allows you to make changes to them
 export class MainInterceptor extends PaperbackInterceptor {
   override async interceptRequest(request: Request): Promise<Request> {
     return request;
@@ -26,19 +25,16 @@ export class MainInterceptor extends PaperbackInterceptor {
   }
 }
 
-export async function checkStatus(status: number, request: Request): Promise<void> {
-  if (status >= 200 && status < 300) {
-    return;
-  }
+export async function fetchRequest(request: Request): Promise<string> {
+  const [response, data] = await Application.scheduleRequest(request);
 
+  const status = response.status;
   if (status === 503 || status === 403) {
     throw new CloudflareError(request, `Cloudflare bypass required (Status: ${status})`);
   }
-  throw new Error(`HTTP Error: ${status} for url: ${request.url}`);
-}
+  if (status < 200 || status >= 300) {
+    throw new Error(`HTTP Error: ${status} for url: ${request.url}`);
+  }
 
-export async function fetchRequest(request: Request): Promise<string> {
-  const [response, data] = await Application.scheduleRequest(request);
-  await checkStatus(response.status, request);
   return Application.arrayBufferToUTF8String(data);
 }

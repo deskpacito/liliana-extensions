@@ -25,37 +25,20 @@ import {
   type Request,
 } from "@paperback/types";
 
-// Extension forms file
 import { SettingsForm } from "./forms";
-// Extension network file
-import { MainInterceptor, fetchRequest } from "./network";
-import { LilianaParser } from "./parser";
 
-export interface GenericParams {
-  name: string;
+import { MainInterceptor, fetchRequest } from "./network";
+import { LilianaParser } from "./parsers";
+
+export interface LilianaParams {
   domain: string;
   contentRating: ContentRating;
   language: string;
-  excludeImagePatterns?: string[];
-  basicRateLimiter?: {
-    numberOfRequests: number;
-    bufferInterval: number;
-    ignoreImages?: boolean;
-  };
-  searchPagePathName?: string;
-  searchMangaSelector?: string;
-  searchRatingSelector?: string;
-  hasProtectedChapters?: boolean;
-  protectedChapterDataSelector?: string;
-  chapterEndpoint?: number;
-  chapterDetailsSelector?: string;
-  bypassPage?: string;
-  directoryPath?: string;
+
   parser?: LilianaParser;
   requestManager?: PaperbackInterceptor;
 }
 
-// Should match the capabilities which you defined in pbconfig.ts
 type LilianaImplementation = SettingsFormProviding &
   Extension &
   DiscoverSectionProviding &
@@ -63,46 +46,32 @@ type LilianaImplementation = SettingsFormProviding &
   MangaProviding &
   ChapterProviding;
 
-// Main extension class
 export abstract class Liliana implements LilianaImplementation {
-  // Common properties
-  readonly name: string;
   readonly domain: string;
   readonly defaultContentRating: ContentRating;
   readonly language: string;
-  readonly searchPagePathName: string;
+
   readonly searchMangaSelector: string;
   parser: LilianaParser;
 
-  // Implementation of the main rate limiter
   mainRateLimiter: BasicRateLimiter;
 
-  // Implementation of the main interceptor
   mainInterceptor: PaperbackInterceptor;
 
-  constructor(params: GenericParams) {
-    this.name = params.name;
+  constructor(params: LilianaParams) {
     this.domain = params.domain;
     this.defaultContentRating = params.contentRating;
     this.language = params.language;
-    this.searchPagePathName = params.searchPagePathName ?? "page";
-    this.searchMangaSelector = params.searchMangaSelector ?? "div#main div.grid > div";
+
+    this.searchMangaSelector = "div#main div.grid > div";
     this.parser = params.parser ?? new LilianaParser();
     this.mainInterceptor = params.requestManager ?? new MainInterceptor("main");
 
-    if (params.basicRateLimiter) {
-      this.mainRateLimiter = new BasicRateLimiter("main", {
-        numberOfRequests: params.basicRateLimiter.numberOfRequests,
-        bufferInterval: params.basicRateLimiter.bufferInterval,
-        ignoreImages: params.basicRateLimiter.ignoreImages ?? false,
-      });
-    } else {
-      this.mainRateLimiter = new BasicRateLimiter("main", {
-        numberOfRequests: 15,
-        bufferInterval: 10,
-        ignoreImages: true,
-      });
-    }
+    this.mainRateLimiter = new BasicRateLimiter("main", {
+      numberOfRequests: 15,
+      bufferInterval: 10,
+      ignoreImages: true,
+    });
   }
 
   // Method from the Extension interface which we implement, initializes the rate limiter, interceptor, discover sections and search filters
@@ -111,7 +80,6 @@ export abstract class Liliana implements LilianaImplementation {
     this.mainInterceptor.registerInterceptor();
   }
 
-  // Implements the settings form, check SettingsForm.ts for more info
   async getSettingsForm(): Promise<Form> {
     return new SettingsForm();
   }
@@ -134,7 +102,6 @@ export abstract class Liliana implements LilianaImplementation {
     return [popularSection, latestSection];
   }
 
-  // Populates both the discover sections
   async getDiscoverSectionItems(
     section: DiscoverSection,
     metadata: number | undefined,
@@ -160,7 +127,12 @@ export abstract class Liliana implements LilianaImplementation {
 
     const html = await fetchRequest(request);
 
-    const items = await this.parser.parseDiscoverSectionItems(html, section, this);
+    const items = this.parser.parseDiscoverSectionItems(
+      html,
+      section,
+      this.domain,
+      this.searchMangaSelector,
+    );
 
     return {
       items: items,
@@ -168,12 +140,10 @@ export abstract class Liliana implements LilianaImplementation {
     };
   }
 
-  // Populate search filters
   async getSearchFilters(): Promise<SearchFilter[]> {
     return [];
   }
 
-  // Populates search
   async getSearchResults(
     query: SearchQuery,
     metadata?: number,
@@ -189,7 +159,7 @@ export abstract class Liliana implements LilianaImplementation {
 
     const html = await fetchRequest(request);
 
-    const items = await this.parser.parseSearchResults(html, this);
+    const items = this.parser.parseSearchResults(html, this.domain, this.searchMangaSelector);
 
     return {
       items: items,
@@ -197,7 +167,6 @@ export abstract class Liliana implements LilianaImplementation {
     };
   }
 
-  // Populates the title details
   async getMangaDetails(mangaId: string): Promise<SourceManga> {
     const request: Request = {
       url: `${this.domain}/${mangaId}`,
@@ -206,10 +175,9 @@ export abstract class Liliana implements LilianaImplementation {
 
     const html = await fetchRequest(request);
 
-    return this.parser.parseMangaDetails(html, mangaId, this);
+    return this.parser.parseMangaDetails(html, mangaId, this.domain, this.defaultContentRating);
   }
 
-  // Populates the chapter list
   async getChapters(sourceManga: SourceManga, _sinceDate?: Date): Promise<Chapter[]> {
     const request: Request = {
       url: `${this.domain}/${sourceManga.mangaId}`,
@@ -218,10 +186,9 @@ export abstract class Liliana implements LilianaImplementation {
 
     const html = await fetchRequest(request);
 
-    return this.parser.parseChapterList(html, sourceManga, this);
+    return this.parser.parseChapterList(html, sourceManga, this.domain, this.language);
   }
 
-  // Populates a chapter with images
   async getChapterDetails(chapter: Chapter): Promise<ChapterDetails> {
     const request: Request = {
       url: `${this.domain}/${chapter.chapterId}`,

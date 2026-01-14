@@ -5,6 +5,7 @@ Paperback extensions for websites which use the generic Liliana theme.
 ## Available Extensions
 
 - [Raw1001](https://raw1001.net)
+- [MangaKoma](https://mangakoma.net)
 - [ManhuaPlus](https://manhuaplus.org)
 
 ## Installation

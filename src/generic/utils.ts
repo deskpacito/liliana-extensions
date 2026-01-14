@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright © 2025 Inkdex */
+
 const BASE_VERSION = "1.0.0-alpha.2";
 
 export function getVersion(
@@ -16,7 +19,10 @@ export function getVersion(
   }
 
   const baseParts = BASE_VERSION.split("-");
-  const versionNumbers = (baseParts[0] ?? "").split(".").map(Number);
+  if (!baseParts[0]) {
+    throw new Error(`Invalid BASE_VERSION: '${BASE_VERSION}'. Version string cannot be empty.`);
+  }
+  const versionNumbers = baseParts[0].split(".").map(Number);
   const isPrerelease = baseParts.length > 1;
 
   if (versionNumbers.length < 3) {
@@ -30,7 +36,10 @@ export function getVersion(
       throw new Error("Cannot set a prerelease number on a stable version.");
     }
 
-    const prereleaseParts = (baseParts[1] ?? "").split(".");
+    if (!baseParts[1]) {
+      throw new Error(`Invalid BASE_VERSION: '${BASE_VERSION}'. Missing prerelease identifier.`);
+    }
+    const prereleaseParts = baseParts[1].split(".");
     if (prereleaseParts.length < 2 || isNaN(Number(prereleaseParts[1]))) {
       throw new Error(
         `Invalid prerelease format in BASE_VERSION: '${BASE_VERSION}'. Expected format: 'X.Y.Z-prerelease.N'`,

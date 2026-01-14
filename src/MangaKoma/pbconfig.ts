@@ -1,13 +1,15 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Copyright © 2025 Inkdex */
+
 import { ContentRating, SourceIntents, type ExtensionInfo } from "@paperback/types";
-import { getVersion } from "../generic/version";
+import { getVersion } from "../generic/utils";
 
 export default {
   name: "MangaKoma",
-  description:
-    "Extension for mangakoma.net, which is a clone of raw1001.net. Use as a mirror/backup in case one of them gets taken down.",
+  description: "Extension that pulls content from mangakoma.net.",
   version: getVersion(),
   icon: "icon.png",
-  language: "🇯🇵",
+  language: "ja",
   contentRating: ContentRating.MATURE,
   capabilities:
     SourceIntents.SETTINGS_FORM_PROVIDING |
@@ -18,7 +20,6 @@ export default {
   developers: [
     {
       name: "deskpacito",
-      website: "https://github.com/deskpacito",
       github: "https://github.com/deskpacito",
     },
   ],
