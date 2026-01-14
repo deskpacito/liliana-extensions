@@ -1,5 +1,5 @@
 {
-  "buildTime": "2026-01-11T18:34:22.592Z",
+  "buildTime": "2026-01-14T06:03:38.074Z",
   "builtWith": {
     "toolchain": "1.0.0-alpha.57",
     "types": "1.0.0-alpha.57"
@@ -11,53 +11,50 @@
   "sources": [
     {
       "name": "MangaKoma",
-      "description": "Extension for mangakoma.net, which is a clone of raw1001.net. Use as a mirror/backup in case one of them gets taken down.",
+      "description": "Extension that pulls content from mangakoma.net.",
       "version": "1.0.0-alpha.2",
       "icon": "icon.png",
-      "language": "🇯🇵",
+      "language": "ja",
       "contentRating": "MATURE",
       "capabilities": 101,
       "badges": [],
       "developers": [
         {
           "name": "deskpacito",
-          "website": "https://github.com/deskpacito",
           "github": "https://github.com/deskpacito"
         }
       ],
       "id": "MangaKoma"
     },
     {
-      "name": "ManhuaPlusOrg",
-      "description": "Extension for manhuaplus.org",
+      "name": "ManhuaPlus",
+      "description": "Extension that pulls content from manhuaplus.org.",
       "version": "1.0.0-alpha.2",
       "icon": "icon.png",
-      "language": "🇬🇧",
-      "contentRating": "SAFE",
+      "language": "en",
+      "contentRating": "MATURE",
       "capabilities": 101,
       "badges": [],
       "developers": [
         {
           "name": "deskpacito",
-          "website": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
           "github": "https://github.com/deskpacito"
         }
       ],
-      "id": "ManhuaPlusOrg"
+      "id": "ManhuaPlus"
     },
     {
       "name": "Raw1001",
-      "description": "Extension for raw1001.net",
+      "description": "Extension that pulls content from raw1001.net.",
       "version": "1.0.0-alpha.2",
       "icon": "icon.png",
-      "language": "🇯🇵",
-      "contentRating": "SAFE",
+      "language": "ja",
+      "contentRating": "MATURE",
       "capabilities": 101,
       "badges": [],
       "developers": [
         {
           "name": "deskpacito",
-          "website": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
           "github": "https://github.com/deskpacito"
         }
       ],
