@@ -12,7 +12,6 @@ export default {
   language: "ja",
   contentRating: ContentRating.MATURE,
   capabilities:
-    SourceIntents.SETTINGS_FORM_PROVIDING |
     SourceIntents.DISCOVER_SECIONS_PROVIDING |
     SourceIntents.SEARCH_RESULTS_PROVIDING |
     SourceIntents.CHAPTER_PROVIDING,

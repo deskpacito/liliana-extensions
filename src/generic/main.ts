@@ -5,7 +5,6 @@ import {
   BasicRateLimiter,
   ContentRating,
   DiscoverSectionType,
-  Form,
   PaperbackInterceptor,
   type Chapter,
   type ChapterDetails,
@@ -20,12 +19,9 @@ import {
   type SearchQuery,
   type SearchResultItem,
   type SearchResultsProviding,
-  type SettingsFormProviding,
   type SourceManga,
   type Request,
 } from "@paperback/types";
-
-import { SettingsForm } from "./forms";
 
 import { MainInterceptor, fetchRequest } from "./network";
 import { LilianaParser } from "./parsers";
@@ -39,8 +35,7 @@ export interface LilianaParams {
   requestManager?: PaperbackInterceptor;
 }
 
-type LilianaImplementation = SettingsFormProviding &
-  Extension &
+type LilianaImplementation = Extension &
   DiscoverSectionProviding &
   SearchResultsProviding &
   MangaProviding &
@@ -78,10 +73,6 @@ export abstract class Liliana implements LilianaImplementation {
   async initialise(): Promise<void> {
     this.mainRateLimiter.registerInterceptor();
     this.mainInterceptor.registerInterceptor();
-  }
-
-  async getSettingsForm(): Promise<Form> {
-    return new SettingsForm();
   }
 
   async getDiscoverSections(): Promise<DiscoverSection[]> {
