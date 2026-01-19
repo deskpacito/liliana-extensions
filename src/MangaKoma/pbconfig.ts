@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
-/* Copyright © 2025 Inkdex */
+/* Copyright © 2026 Inkdex */
 
 import { ContentRating, SourceIntents, type ExtensionInfo } from "@paperback/types";
 import { getVersion } from "../generic/utils";

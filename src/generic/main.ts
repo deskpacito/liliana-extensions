@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
-/* Copyright © 2025 Inkdex */
+/* Copyright © 2026 Inkdex */
 
 import {
   BasicRateLimiter,
@@ -30,9 +30,9 @@ export interface LilianaParams {
   domain: string;
   contentRating: ContentRating;
   language: string;
-
   parser?: LilianaParser;
   requestManager?: PaperbackInterceptor;
+  rateLimiter?: BasicRateLimiter;
 }
 
 type LilianaImplementation = Extension &
@@ -45,31 +45,27 @@ export abstract class Liliana implements LilianaImplementation {
   readonly domain: string;
   readonly defaultContentRating: ContentRating;
   readonly language: string;
-
   readonly searchMangaSelector: string;
   parser: LilianaParser;
-
   mainRateLimiter: BasicRateLimiter;
-
   mainInterceptor: PaperbackInterceptor;
 
   constructor(params: LilianaParams) {
     this.domain = params.domain;
     this.defaultContentRating = params.contentRating;
     this.language = params.language;
-
     this.searchMangaSelector = "div#main div.grid > div";
     this.parser = params.parser ?? new LilianaParser();
     this.mainInterceptor = params.requestManager ?? new MainInterceptor("main");
-
-    this.mainRateLimiter = new BasicRateLimiter("main", {
-      numberOfRequests: 15,
-      bufferInterval: 10,
-      ignoreImages: true,
-    });
+    this.mainRateLimiter =
+      params.rateLimiter ??
+      new BasicRateLimiter("main", {
+        numberOfRequests: 15,
+        bufferInterval: 10,
+        ignoreImages: true,
+      });
   }
 
-  // Method from the Extension interface which we implement, initializes the rate limiter, interceptor, discover sections and search filters
   async initialise(): Promise<void> {
     this.mainRateLimiter.registerInterceptor();
     this.mainInterceptor.registerInterceptor();
@@ -117,7 +113,6 @@ export abstract class Liliana implements LilianaImplementation {
     };
 
     const html = await fetchRequest(request);
-
     const items = this.parser.parseDiscoverSectionItems(
       html,
       section,
@@ -140,16 +135,13 @@ export abstract class Liliana implements LilianaImplementation {
     metadata?: number,
   ): Promise<PagedResults<SearchResultItem>> {
     const page = metadata ?? 1;
-
     const url = `${this.domain}/search/${page}/?keyword=${encodeURIComponent(query.title)}`;
-
     const request: Request = {
       url: url,
       method: "GET",
     };
 
     const html = await fetchRequest(request);
-
     const items = this.parser.parseSearchResults(html, this.domain, this.searchMangaSelector);
 
     return {
@@ -165,7 +157,6 @@ export abstract class Liliana implements LilianaImplementation {
     };
 
     const html = await fetchRequest(request);
-
     return this.parser.parseMangaDetails(html, mangaId, this.domain, this.defaultContentRating);
   }
 
@@ -176,7 +167,6 @@ export abstract class Liliana implements LilianaImplementation {
     };
 
     const html = await fetchRequest(request);
-
     return this.parser.parseChapterList(html, sourceManga, this.domain, this.language);
   }
 
@@ -187,7 +177,6 @@ export abstract class Liliana implements LilianaImplementation {
     };
 
     const html = await fetchRequest(request);
-
     const numericChapterId = this.parser.getNumericChapterId(html);
 
     if (!numericChapterId) {
